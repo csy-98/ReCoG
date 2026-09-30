@@ -6,7 +6,8 @@ Copyright (c) 2025 Deepayan. That notice and its license terms are retained in
 LICENSE.
 
 The repository contains source code, documentation, and a figure from the ReCoG
-paper (`assets/recog-overview.svg`). It does not redistribute datasets, support photographs, generated
+paper (`assets/recog-overview.svg`), and the NeurIPS, Chung-Ang University, and
+FoVLab logos in `assets/`, which belong to their respective owners. It does not redistribute datasets, support photographs, generated
 feature databases, model weights, experiment outputs, or research manuscripts.
 
 The `r2p` package includes R2P/ReCoG MiniCPM reasoning, message adapters,

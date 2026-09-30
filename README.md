@@ -2,11 +2,11 @@
 
 # ReCoG: Relational Concept Graph for Training-Free Personalization
 
-**NeurIPS 2026**
+<img src="assets/neurips-logo.svg" alt="NeurIPS" height="22" align="absmiddle"> 🇦🇺 **NeurIPS 2026**
 
 Changseon Yu · Hyeokjun Kweon
 
-Foundational Vision Laboratory, Chung-Ang University
+<img src="assets/fovlab-logo.png" alt="FoVLab" height="20" align="absmiddle"> Foundational Vision Laboratory, <img src="assets/cau-logo.png" alt="Chung-Ang University" height="20" align="absmiddle"> Chung-Ang University
 
 📄 Paper (coming soon) · [🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md) · [🇰🇷 한국어](README.ko.md)
 

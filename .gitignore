@@ -55,3 +55,6 @@ build/
 dist/
 *concept_list*
 *database_list*
+
+# README figures and logos
+!assets/*.png
