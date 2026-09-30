@@ -69,7 +69,7 @@ For every unordered candidate pair $(c_i,c_j)$, the frozen judge receives:
 
 The prompt asks which support concept matches the query, grounding the decision
 in the distinctive cues while ignoring incidental pose, background, and lighting.
-The adapter parses the JSON `Answer` field into exactly one of the two concept
+The included MiniCPM adapter parses the JSON `Answer` field into exactly one of the two concept
 identifiers. A malformed decision raises an error rather than silently awarding
 a win. All required graph evidence is checked before judge calls begin.
 
@@ -107,9 +107,11 @@ the supplied concepts: the method here has no unknown-class rejection threshold.
 | `PairJudge` | Query/A/B images in that order and the comparison prompt | One exact concept identifier parsed from JSON `Answer` |
 
 `support_image` and `query_image` are opaque string handles. The adapters decide
-how those handles resolve to actual image content. Model loading, image I/O,
-decoding configuration, and response parsing are outside the core package.
-No mock adapter is presented as a working VLM.
+how those handles resolve to actual image content. The runnable integration in [`runtime.py`](../recog/runtime.py) resolves local
+images and parses responses, while [`r2p/model_interface.py`](../r2p/model_interface.py)
+loads the frozen MiniCPM model. [`cli.py`](../recog/cli.py) connects these components
+to local database construction and recognition. Test doubles are confined to tests;
+the CLI uses actual CLIP and MiniCPM models. See [Running](running.md).
 
 ## 🧮 Cost and limits
 

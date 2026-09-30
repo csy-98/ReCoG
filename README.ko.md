@@ -6,7 +6,7 @@
 
 **개념 사이의 차이를 기억하고, 비교를 통해 인식합니다.**
 
-[English](README.md) · [🧭 방법론](docs/methodology.md) · [🍵 가상 예시](docs/illustrated-example.md)
+[English](README.md) · [🚀 실행 안내](docs/running.md) · [🧭 방법론](docs/methodology.md) · [🍵 가상 예시](docs/illustrated-example.md)
 
 </div>
 
@@ -40,15 +40,31 @@ VLM 호출에서 양쪽 특징을 각각 세 개씩 추출합니다.
 3. [특징 추출·비교 프롬프트](recog/prompts.py)를 읽습니다.
 4. [방법론 문서](docs/methodology.md)에서 수식과 입력·출력 계약을 확인합니다.
 
+## 🚀 내 데이터로 실행하기
+
+Python 3.10 독립 환경에서 설치한 뒤, 로컬 지원 이미지 목록을 지정합니다.
+
+```bash
+python -m pip install -r requirements.txt
+recog build --manifest /path/to/support-manifest.json --output private/database.json
+recog recognize --database private/database.json --query /path/to/query.jpg --method recog
+recog recognize --database private/database.json --query /path/to/query.jpg --method r2p
+```
+
+R2P의 프롬프트·추론·모델 어댑터 코드와 실제 CLIP/MiniCPM 로더를 포함합니다.
+`--r2p-db`로 기존 로컬 DB를 읽고, `--pairwise-dir`로 기존 pairwise 특징을
+가져올 수도 있습니다. [실행 안내](docs/running.md)에 입력 형식과 명령어를
+정리했습니다.
+
 ## 🍃 제공 범위
 
-이 저장소는 **방법론을 읽고 이해하기 위한 간결한 코드**입니다. DB, 실제
-이미지, 임베딩, 생성된 특징 캐시, 모델 가중치는 포함하지 않습니다.
-이미지 인코딩과 VLM 연결은 호출자가 제공하는 인터페이스로 분리되어 있습니다.
+**DB 목록·실제 DB·이미지·임베딩·특징 캐시·모델 가중치는 포함하지 않습니다.**
+사용자가 지정한 로컬 경로에서 데이터를 읽으며, 생성 파일은 Git에서 제외됩니다.
+원본 연구 폴더 전체나 과거 데이터 이력은 복사하지 않습니다.
 
-Python 3.10 이상 문법과 표준 라이브러리를 사용합니다. 준비 과정에서 소스
-문법과 파일 구성을 점검했으며, 예제 실행·모델 추론·벤치마크는 수행하지
-않았습니다. 문서의 작은 예시는 전부 설명을 위해 만든 가상 내용입니다.
+임시 입력을 이용한 단위·연결 테스트, 모델 모듈 import, CLI와 문법·패키지
+점검을 수행했습니다. 실제 모델 추론·데이터셋 예제·벤치마크는 실행하지
+않았으므로, GPU 환경에서의 전체 동작과 정확도는 검증하지 않았습니다.
 
 ## 🤝 출처
 

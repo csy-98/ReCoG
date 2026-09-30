@@ -48,3 +48,10 @@ venv/
 .idea/
 .vscode/
 .DS_Store
+
+# Package builds and private concept inventories
+*.egg-info/
+build/
+dist/
+*concept_list*
+*database_list*

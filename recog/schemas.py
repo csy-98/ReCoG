@@ -40,8 +40,8 @@ class PairEvidence:
         if not self.a or not self.b or self.a == self.b:
             raise ValueError("An edge must connect two distinct, named concepts.")
         for cues in (self.a_to_b, self.b_to_a):
-            if len(cues) != 3 or any(not isinstance(cue, str) or not cue.strip() for cue in cues):
-                raise ValueError("Each direction requires three nonempty distinctive cues.")
+            if not cues or any(not isinstance(cue, str) or not cue.strip() for cue in cues):
+                raise ValueError("Each direction requires nonempty distinctive cues.")
 
     def oriented(self, a: str, b: str) -> "PairEvidence":
         if (a, b) == (self.a, self.b):

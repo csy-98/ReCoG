@@ -8,7 +8,7 @@
 
 Frozen visual features · Directed contrastive cues · Pairwise reasoning
 
-[🧭 Method](docs/methodology.md) · [🧩 Code](recog/pipeline.py) · [🍵 Illustrated example](docs/illustrated-example.md) · [🇰🇷 한국어](README.ko.md)
+[🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md) · [🧩 Code](recog/pipeline.py) · [🍵 Illustrated example](docs/illustrated-example.md) · [🇰🇷 한국어](README.ko.md)
 
 </div>
 
@@ -20,10 +20,10 @@ concept different from another. Given a query, ReCoG retrieves **three candidate
 compares each pair using their contrastive cues, and selects the concept with the
 most wins.
 
-This repository presents the **core methodology in compact Python**. Database
-contents, support images, embeddings, generated feature caches, and model weights
-are not distributed. Model adapters are explicit interfaces; this is not a
-packaged end-to-end experiment runner.
+This repository includes the **ReCoG method and runnable R2P components**:
+CLIP encoding, MiniCPM model loading, prompts, local database preparation, and
+R2P/ReCoG inference. Database contents, concept inventories, support images,
+embeddings, generated feature caches, and model weights are not distributed.
 
 ## 🪴 The idea in one picture
 
@@ -64,43 +64,72 @@ the query-to-support CLIP similarity.
 > “A has a round handle compared with B” and “B has an angular handle compared
 > with A” belong to different directed edges.
 
+## 🚀 Run with your own local data
+
+Use an isolated **Python 3.10** environment with a CUDA-capable PyTorch setup.
+
+```bash
+python -m pip install -r requirements.txt
+
+# Prepare a local database from your own support manifest.
+recog build --manifest /path/to/support-manifest.json --output private/database.json
+
+# ReCoG: Top-3 → pairwise comparisons → league winner.
+recog recognize --database private/database.json --query /path/to/query.jpg --method recog
+
+# R2P: Top-3 → reasoning over unary concept descriptions.
+recog recognize --database private/database.json --query /path/to/query.jpg --method r2p
+```
+
+`python -m recog` also works in place of `recog`. Model weights are loaded when
+building or recognizing, so those commands require your model files or access to
+Hugging Face. See the [execution guide](docs/running.md) for manifest fields,
+existing R2P DB import, local checkpoints, and installation details.
+
+> 🔒 Keep your data local. Generated DBs, JSON files, concept inventories, image
+> files, and model weights are excluded from Git. There is no bundled DB list.
+
 ## 🗂️ A little map of the code
 
 ```text
 ReCoG/
 ├── recog/
-│   ├── schemas.py          # Concepts, directional evidence, matches, predictions
+│   ├── schemas.py          # Concepts, directional evidence, and predictions
 │   ├── graph.py            # Offline pairwise cue extraction
 │   ├── retrieval.py        # CLIP cosine ranking → Top-3
-│   ├── prompts.py          # Extraction and comparison instructions
 │   ├── matching.py         # Round-robin comparisons → win counts
-│   └── pipeline.py         # The online method in two calls
-├── docs/
-│   ├── methodology.md      # Definitions, equations, and interface contracts
-│   └── illustrated-example.md
-├── assets/
-│   └── recog-banner.svg
-├── README.ko.md
-├── NOTICE.md
-└── LICENSE
+│   ├── runtime.py          # MiniCPM extraction, matching, and R2P selection
+│   ├── storage.py          # Private local input/output formats
+│   └── cli.py              # build / validate / recognize
+├── r2p/
+│   ├── retriever.py        # Frozen CLIP image encoder
+│   ├── model_interface.py  # MiniCPM-o vision model loader
+│   ├── mini_cpm_reasoning.py
+│   ├── mini_cpm_reasoning_pairwise.py
+│   ├── model_adapters.py   # MiniCPM message formatting
+│   ├── prompt_generator.py
+│   ├── compute_confidence.py
+│   └── pairwise_loader.py  # Local pairwise/shared feature import
+├── docs/                   # Method, execution guide, illustrated example
+├── assets/                 # Pastel vector banner
+├── tests/                  # Offline contract tests with temporary inputs
+├── pyproject.toml
+└── requirements.txt
 ```
 
 ## 📖 Reading the pipeline
 
-The offline stage calls `build_graph(concepts, extract)`. The `extract` adapter
-passes two support images to a frozen VLM and returns three distinctive cues per
-direction. At inference time, the entire orchestration is:
+The offline stage calls `build_graph(concepts, extract)` to obtain directional
+cue lists. At inference time, the core ReCoG orchestration is:
 
 ```python
 candidates = retrieve_top3(query_embedding, list(graph.nodes.values()))
 prediction = run_league(query_image, candidates, graph, judge)
 ```
 
-The caller supplies CLIP embeddings and a `judge` adapter that compares the query
-with two support images. The core uses the Python standard library and targets
-**Python 3.10+**. It does not load a model, read a database, or download assets on
-import. See the [adapter contracts](docs/methodology.md#-adapter-contracts) for the
-expected image order and outputs.
+The CLI connects these functions to the included CLIP encoder and MiniCPM
+backend. The method core uses the Python standard library; the optional
+`runtime` installation supplies the model dependencies.
 
 ## 🍵 A tiny example
 
@@ -112,13 +141,15 @@ Follow a [hand-written retrieval and league example](docs/illustrated-example.md
 Its names, scores, descriptions, and results are invented for explanation;
 they are not database records or experimental measurements.
 
-## 📝 Scope
+## 📝 Scope and validation
 
-- **Included:** directed graph construction, Top-3 cosine retrieval, pairwise
-  prompts, league scoring, and final tie-breaking.
-- **External inputs:** images, CLIP embeddings, and frozen VLM adapters.
-- **Validation:** source syntax and repository contents were reviewed. No example,
-  model inference, or benchmark was executed for this preparation.
+- **Included:** R2P reasoning modules, concrete CLIP/MiniCPM integration, local DB
+  build/import, directed graph construction, Top-3 retrieval, and both inference modes.
+- **Private inputs:** your images, DB contents, concept lists, and generated features.
+- **Checked:** offline unit/integration tests using temporary inputs and test doubles,
+  runtime module imports, CLI help, source syntax, and package contents.
+- **Not executed:** real-model inference, a dataset example, or benchmark evaluation.
+  Model quality and hardware-specific end-to-end behavior remain unverified.
 
 ## 🤝 Acknowledgments
 

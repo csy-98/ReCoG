@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recog-personalization"
+version = "0.2.0"
+description = "R2P and ReCoG: retrieval and reasoning with contrastive concept graphs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = []
+
+[project.optional-dependencies]
+runtime = [
+    "torch==2.3.1",
+    "torchvision==0.18.1",
+    "torchaudio==2.3.1",
+    "transformers==4.44.2",
+    "tokenizers==0.19.1",
+    "numpy==1.26.4",
+    "Pillow==10.1.0",
+    "accelerate==1.2.1",
+    "timm==0.9.10",
+    "einops==0.8.0",
+    "soundfile==0.12.1",
+    "librosa==0.10.2.post1",
+    "sentencepiece==0.2.0",
+]
+
+[project.scripts]
+recog = "recog.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["recog*", "r2p*"]
+
+[tool.setuptools]
+include-package-data = false

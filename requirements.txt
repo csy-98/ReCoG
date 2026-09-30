@@ -1,0 +1,2 @@
+# Install from an isolated Python 3.10 environment.
+-e .[runtime]
