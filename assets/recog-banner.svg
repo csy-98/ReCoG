@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="340" viewBox="0 0 1100 340" role="img" aria-labelledby="title desc">
+  <title id="title">ReCoG — little clues, clearer recognition</title>
+  <desc id="desc">A pastel illustration of three concept nodes linked by directional contrastive cues, beside the ReCoG wordmark.</desc>
+  <defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#e8dfd7"/></pattern>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#a08ab7" stroke-width="1.4"/></marker>
+  </defs>
+  <rect width="1100" height="340" rx="28" fill="#fcf8f2"/>
+  <rect width="1100" height="340" rx="28" fill="url(#dots)"/>
+  <path d="M35 278 Q155 236 281 287 T555 283" fill="none" stroke="#e8eee0" stroke-width="30" stroke-linecap="round"/>
+  <rect x="48" y="38" width="168" height="29" rx="14" fill="#e6edde"/>
+  <text x="132" y="58" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" letter-spacing="2" fill="#506746">A CONCEPT GARDEN</text>
+  <text x="47" y="152" font-family="Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-3" fill="#403b51">ReCoG<tspan font-size="26" fill="#a18ab8"> ✦</tspan></text>
+  <text x="51" y="196" font-family="Arial,sans-serif" font-size="25" fill="#6d627b">Little clues, clearer recognition.</text>
+  <text x="51" y="231" font-family="Arial,sans-serif" font-size="16" fill="#867b86">Retrieve three. Compare pairs. Recognize.</text>
+  <g font-family="Arial,sans-serif" font-size="13" text-anchor="middle" fill="#665874">
+    <rect x="51" y="266" width="94" height="30" rx="15" fill="#ece3f6"/><text x="98" y="286">TOP-3</text>
+    <rect x="155" y="266" width="126" height="30" rx="15" fill="#f7e6d3"/><text x="218" y="286">PAIRWISE</text>
+    <rect x="291" y="266" width="110" height="30" rx="15" fill="#e1ede4"/><text x="346" y="286">GRAPH</text>
+  </g>
+  <path d="M773 118 Q848 95 915 153 M910 172 Q842 133 783 142 M925 200 Q903 249 819 260 M809 244 Q870 224 901 195 M760 238 Q716 202 730 154 M748 157 Q749 198 782 230" fill="none" stroke="#a08ab7" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <g font-family="Arial,sans-serif" text-anchor="middle" font-weight="700" font-size="22" fill="#51485d">
+    <circle cx="745" cy="111" r="48" fill="#e5ddf1" stroke="#d2c2e1" stroke-width="2"/><text x="745" y="119">A</text>
+    <circle cx="939" cy="177" r="48" fill="#f7e1c8" stroke="#e6c9a8" stroke-width="2"/><text x="939" y="185">B</text>
+    <circle cx="782" cy="270" r="43" fill="#daebdf" stroke="#b7d5c0" stroke-width="2"/><text x="782" y="278">C</text>
+  </g>
+  <rect x="824" y="48" width="208" height="35" rx="12" fill="#fff" stroke="#e6dce9" transform="rotate(5 928 65)"/>
+  <text x="927" y="71" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#85718e" transform="rotate(5 928 65)">What makes us different?</text>
+  <g fill="#c6b1d7"><path d="M660 94 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4Z"/><path d="M1011 253 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3Z"/></g>
+  <g fill="#c3d7bb"><circle cx="674" cy="244" r="4"/><circle cx="1019" cy="119" r="5"/><circle cx="852" cy="304" r="3"/></g>
+</svg>
