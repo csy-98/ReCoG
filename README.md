@@ -1,70 +1,144 @@
 <div align="center">
 
-![ReCoG — little clues, clearer recognition](assets/recog-banner.svg)
+# ReCoG: Relational Concept Graph for Training-Free Personalization
 
-# 🌷 ReCoG
+**NeurIPS 2026**
 
-**Recognize a concept by what makes it different.**
+Changseon Yu · Hyeokjun Kweon
 
-Frozen visual features · Directed contrastive cues · Pairwise reasoning
+Foundational Vision Laboratory, Chung-Ang University
 
-[🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md) · [🧩 Code](recog/pipeline.py) · [🍵 Illustrated example](docs/illustrated-example.md) · [🇰🇷 한국어](README.ko.md)
+📄 Paper (coming soon) · [🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md) · [🇰🇷 한국어](README.ko.md)
+
+<img src="assets/recog-overview.svg" alt="ReCoG overview: relation-agnostic vs. relation-aware personalization, and the Relational Concept Graph" width="100%">
 
 </div>
 
----
+## Abstract
 
-ReCoG represents personalized concepts as a graph. Each node holds a support
-image and its visual embedding; each directed edge describes what makes one
-concept different from another. Given a query, ReCoG retrieves **three candidates**,
-compares each pair using their contrastive cues, and selects the concept with the
-most wins.
+Training-free personalization adapts a frozen vision-language model (VLM) to recognize
+user-defined concepts from only a few exemplars by retrieving concept entries at inference
+time. While recent retriever-based methods enrich each concept with descriptive evidence,
+they largely treat concepts in isolation, so the retrieved information can be plausible yet
+non-discriminative, especially when the personalized concept set contains highly confusable,
+fine-grained categories. We argue that personalization is inherently **relational**: correct
+recognition depends on the specific distinctions between a concept and its nearest
+alternatives. To this end, we propose **ReCoG**, a **Re**lational **Co**ncept **G**raph for
+retrieval-augmented personalization. ReCoG represents concepts as nodes and augments them with
+directed edges that explicitly capture discriminative cues between concept pairs, elicited by a
+frozen VLM during database construction. At inference, ReCoG retrieves a shortlist and resolves
+ambiguity via explicit pairwise comparisons conditioned on the corresponding relational edges,
+selecting the concept that consistently wins against competing candidates. We also introduce
+**FINGER** benchmark to test personalized recognition on confusable concept sets. Across FINGER,
+ReCoG substantially outperforms prior methods, with the largest gains in the most confusable
+regimes. ReCoG also achieves consistently best performance on established personalization
+benchmarks including captioning and VQA, confirming that relational evidence is broadly
+beneficial beyond fine-grained settings.
 
-This repository includes the **ReCoG method and runnable R2P components**:
-CLIP encoding, MiniCPM model loading, prompts, local database preparation, and
-R2P/ReCoG inference. Database contents, concept inventories, support images,
-embeddings, generated feature caches, and model weights are not distributed.
+## Method
 
-## 🪴 The idea in one picture
+**1. Relation-aware database.** For each pair of concepts $(c_i, c_j)$, a frozen VLM is asked
+what makes $c_i$ different from $c_j$. The answer is stored as a directed edge
 
-```mermaid
-flowchart LR
-    subgraph OFF["🌱 Offline · build the concept graph"]
-        S[Support concepts] --> E[Frozen VLM: extract pair-specific cues]
-        E --> G[Directed contrast graph]
-    end
-    subgraph ON["🔎 Online · recognize a query"]
-        Q[Query CLIP embedding] --> R[Cosine similarity · Top-3]
-        R --> P[Three pairwise comparisons]
-        P --> W[Most wins · similarity tie-break]
-    end
-    S --> R
-    G --> P
-    classDef mint fill:#e1f4ea,stroke:#71a98b,color:#244c3a;
-    classDef lilac fill:#efe8fa,stroke:#aa8bca,color:#4d3964;
-    classDef peach fill:#fff0df,stroke:#d7a26d,color:#6a4627;
-    class S,E,G mint;
-    class Q,R lilac;
-    class P,W peach;
-```
+$$e_{ij} = \mathrm{VLM}(x_i^s, x_j^s \mid P_{\text{disc}}),$$
 
-## 🧵 Three small pieces
+and $e_{ij} \neq e_{ji}$ in general. Both edges are obtained from a single VLM call per
+unordered pair. Each concept entry stores its CLIP embedding and its outgoing edges.
 
-| Piece | What it does | Start reading |
-| :--- | :--- | :--- |
-| 🌱 **Graph construction** | Extracts both directional cue lists for every concept pair | [`build_graph`](recog/graph.py) |
-| 🔎 **Top-3 retrieval** | Ranks support concepts by CLIP cosine similarity | [`retrieve_top3`](recog/retrieval.py) |
-| ⚖️ **Pairwise matching** | Compares every candidate pair and aggregates wins | [`run_league`](recog/matching.py) |
+**2. Discriminative retrieval via explicit comparison.** At inference, CLIP similarity prunes
+the concept set to a shortlist $\mathcal{K}$. For every pair $(u, v)$ in $\mathcal{K}$, the
+frozen VLM decides whether the query is closer to $c_u$ or $c_v$, conditioned on $e_{uv}$ and
+$e_{vu}$. Wins are aggregated round-robin, and the concept with the most wins is returned
+(ties are broken by CLIP similarity).
 
-For candidates **A, B, C**, the league contains **A vs B**, **A vs C**, and
-**B vs C**. Each comparison contributes one win. A final tie is resolved using
-the query-to-support CLIP similarity.
+**3. Sparse ReCoG.** Instead of all $\mathcal{O}(N^2)$ pairs, edges are built only between each
+concept and its top-$k$ CLIP neighbors, reducing database construction cost.
 
-> 🍃 An edge is a **description**, not a similarity score.
-> “A has a round handle compared with B” and “B has an angular handle compared
-> with A” belong to different directed edges.
+## FINGER Benchmark
 
-## 🚀 Run with your own local data
+**FINGER** (**FIN**e-**G**rained p**ER**sonalization) targets concept sets with high visual
+confusability.
+
+| Task | Source | Concepts | Images |
+| :--- | :--- | :---: | :---: |
+| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) |
+| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) |
+| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) |
+
+## Results
+
+**Setup.** CLIP ViT-L for the database, MiniCPM-o-2.6 as the VLM, and a single reference image
+per concept. P.Acc / N.Acc are accuracies on positive / negative queries, Wtd. is their average,
+and Recall is the hard recall for captioning.
+
+### FINGER benchmark
+
+| Dataset | Method | P.Acc | N.Acc | Wtd. | Recall |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **CUB-Easy** | R2P | 87.9 | 88.9 | 88.4 | 76.1 |
+|  | Baseline | 50.0 | 97.3 | 73.7 | 65.0 |
+|  | **ReCoG** | **96.3** | **99.8** | **98.1** | **80.8** |
+| **CUB-Hard** | R2P | 63.8 | 98.1 | 81.0 | 55.0 |
+|  | Baseline | 41.8 | 96.9 | 69.4 | 47.9 |
+|  | **ReCoG** | **86.3** | **99.3** | **92.8** | **62.1** |
+| **CLEVR** | R2P | 61.1 | 98.0 | 79.6 | 24.4 |
+|  | Baseline | 51.7 | 97.5 | 74.6 | 14.8 |
+|  | **ReCoG** | **87.2** | **99.3** | **93.3** | **41.7** |
+
+Baseline uses R2P's relation-agnostic descriptions with pairwise retrieval. On Wtd., ReCoG
+outperforms R2P by **+9.7**, **+11.8**, and **+13.7** points on CUB-Easy, CUB-Hard, and CLEVR.
+
+### CLEVR difficulty (P.Acc / N.Acc)
+
+$K$ is scene complexity; 1-hop concepts differ by a smaller change than 2-hop concepts.
+
+| $K$ | Method | 1-hop | 2-hop |
+| :---: | :--- | :---: | :---: |
+| 4 | R2P | 61.7 / 63.8 | 75.0 / 83.2 |
+|   | Baseline | 52.8 / 98.0 | 68.3 / 98.8 |
+|   | **ReCoG** | **91.4 / 99.7** | **91.7 / 99.6** |
+| 5 | R2P | 53.8 / 60.5 | 72.2 / 80.9 |
+|   | Baseline | 36.1 / 96.6 | 50.5 / 97.4 |
+|   | **ReCoG** | **76.6 / 98.7** | **82.2 / 99.1** |
+| 6 | R2P | 46.6 / 53.4 | 68.4 / 70.9 |
+|   | Baseline | 30.0 / 96.3 | 40.0 / 96.8 |
+|   | **ReCoG** | **74.4 / 98.6** | **81.4 / 98.4** |
+
+### Established benchmarks
+
+Recognition and captioning on MyVLM, Yo'LLaVA, and PerVA:
+
+| Dataset | Method | P.Acc | N.Acc | Wtd. | Recall |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **MyVLM** | MyVLM | 96.6 | 90.9 | 93.8 | 0.02 |
+|  | Yo'LLaVA | 97.0 | 95.7 | 96.4 | 0.1 |
+|  | RAP | 94.4 | 98.8 | 96.6 | 88.0 |
+|  | R2P | 96.3 | 98.5 | 97.4 | 91.4 |
+|  | **ReCoG** | **98.6** | **99.9** | **99.3** | **92.9** |
+| **Yo'LLaVA** | MyVLM | - | - | - | - |
+|  | Yo'LLaVA | 94.9 | 89.8 | 92.4 | 0.2 |
+|  | RAP | 86.0 | 99.2 | 92.2 | 79.7 |
+|  | R2P | 91.1 | 97.7 | 94.4 | 87.1 |
+|  | **ReCoG** | **95.0** | **99.9** | **97.4** | **90.4** |
+| **PerVA** | MyVLM | 66.0 | 58.5 | 62.2 | - |
+|  | Yo'LLaVA | 75.1 | 69.0 | 72.0 | - |
+|  | RAP | 92.9 | 85.2 | 89.0 | 64.1 |
+|  | R2P | 90.2 | 92.8 | 91.8 | 72.5 |
+|  | **ReCoG** | **97.7** | **99.9** | **98.8** | **73.7** |
+
+VQA on Yo'LLaVA:
+
+| Method | Yo'LLaVA | RAP | GPT-4V+VP | LLaVA | R2P | **ReCoG** |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| Accuracy | 92.9 | 93.2 | 86.6 | 89.9 | 96.5 | **97.0** |
+
+### Sparse ReCoG
+
+On CUB-Hard, Sparse ReCoG with $k=1$ already outperforms R2P while requiring only 13 VLM
+calls for graph construction. With $k=2$, it reaches **85.0%** P.Acc using only **26** VLM
+calls, close to the full ReCoG performance of **86.3%** obtained with all 190 pairwise edges.
+
+## Getting started
 
 Use an isolated **Python 3.10** environment with a CUDA-capable PyTorch setup.
 
@@ -81,15 +155,12 @@ recog recognize --database private/database.json --query /path/to/query.jpg --me
 recog recognize --database private/database.json --query /path/to/query.jpg --method r2p
 ```
 
-`python -m recog` also works in place of `recog`. Model weights are loaded when
-building or recognizing, so those commands require your model files or access to
-Hugging Face. See the [execution guide](docs/running.md) for manifest fields,
-existing R2P DB import, local checkpoints, and installation details.
+`python -m recog` also works in place of `recog`. See the [execution guide](docs/running.md)
+for manifest fields, existing R2P DB import, local checkpoints, and installation details.
+Database contents, concept inventories, support images, embeddings, and model weights are not
+distributed and stay local.
 
-> 🔒 Keep your data local. Generated DBs, JSON files, concept inventories, image
-> files, and model weights are excluded from Git. There is no bundled DB list.
-
-## 🗂️ A little map of the code
+## Code structure
 
 ```text
 ReCoG/
@@ -101,58 +172,22 @@ ReCoG/
 │   ├── runtime.py          # MiniCPM extraction, matching, and R2P selection
 │   ├── storage.py          # Private local input/output formats
 │   └── cli.py              # build / validate / recognize
-├── r2p/
-│   ├── retriever.py        # Frozen CLIP image encoder
-│   ├── model_interface.py  # MiniCPM-o vision model loader
-│   ├── mini_cpm_reasoning.py
-│   ├── mini_cpm_reasoning_pairwise.py
-│   ├── model_adapters.py   # MiniCPM message formatting
-│   ├── prompt_generator.py
-│   ├── compute_confidence.py
-│   └── pairwise_loader.py  # Local pairwise/shared feature import
+├── r2p/                    # R2P reasoning modules, CLIP encoder, MiniCPM loader
 ├── docs/                   # Method, execution guide, illustrated example
-├── assets/                 # Pastel vector banner
+├── assets/                 # README figure
 ├── tests/                  # Offline contract tests with temporary inputs
 ├── pyproject.toml
 └── requirements.txt
 ```
 
-## 📖 Reading the pipeline
+## Notes
 
-The offline stage calls `build_graph(concepts, extract)` to obtain directional
-cue lists. At inference time, the core ReCoG orchestration is:
+The numbers above are reported in the paper. This repository's code has been checked with
+offline unit/integration tests; real-model inference and benchmark evaluation have not been
+re-run from this repository.
 
-```python
-candidates = retrieve_top3(query_embedding, list(graph.nodes.values()))
-prediction = run_league(query_image, candidates, graph, judge)
-```
+## Acknowledgments
 
-The CLI connects these functions to the included CLIP encoder and MiniCPM
-backend. The method core uses the Python standard library; the optional
-`runtime` installation supplies the model dependencies.
-
-## 🍵 A tiny example
-
-Imagine three fictional mugs: **Pebble**, **Ribbon**, and **Clover**. Pebble and
-Ribbon may both be cream-colored, so color alone is unhelpful. A pair-specific
-cue—such as a rounded handle versus an angular one—can separate them.
-
-Follow a [hand-written retrieval and league example](docs/illustrated-example.md).
-Its names, scores, descriptions, and results are invented for explanation;
-they are not database records or experimental measurements.
-
-## 📝 Scope and validation
-
-- **Included:** R2P reasoning modules, concrete CLIP/MiniCPM integration, local DB
-  build/import, directed graph construction, Top-3 retrieval, and both inference modes.
-- **Private inputs:** your images, DB contents, concept lists, and generated features.
-- **Checked:** offline unit/integration tests using temporary inputs and test doubles,
-  runtime module imports, CLI help, source syntax, and package contents.
-- **Not executed:** real-model inference, a dataset example, or benchmark evaluation.
-  Model quality and hardware-specific end-to-end behavior remain unverified.
-
-## 🤝 Acknowledgments
-
-This code was prepared from the ReCoG research implementation built on R2P.
-The upstream MIT notice is retained in [LICENSE](LICENSE); see [NOTICE.md](NOTICE.md)
-for attribution. No benchmark performance or publication status is asserted here.
+This code was prepared from the ReCoG research implementation built on
+R2P. The upstream MIT notice is retained in [LICENSE](LICENSE); see
+[NOTICE.md](NOTICE.md) for attribution.
