@@ -54,16 +54,28 @@ $e_{vu}$. Wins are aggregated round-robin, and the concept with the most wins is
 **3. Sparse ReCoG.** Instead of all $\mathcal{O}(N^2)$ pairs, edges are built only between each
 concept and its top-$k$ CLIP neighbors, reducing database construction cost.
 
-## FINGER Benchmark
+## Datasets
+
+### FINGER benchmark (ours)
 
 **FINGER** (**FIN**e-**G**rained p**ER**sonalization) targets concept sets with high visual
 confusability.
 
-| Task | Source | Concepts | Images |
-| :--- | :--- | :---: | :---: |
-| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) |
-| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) |
-| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) |
+| Task | Source | Concepts | Images | Download |
+| :--- | :--- | :---: | :---: | :---: |
+| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) | 🤗 Coming soon |
+| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) | 🤗 Coming soon |
+| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) | 🤗 Coming soon |
+
+> 🤗 FINGER will be released on Hugging Face.
+
+### Established benchmarks
+
+| Benchmark | Concepts | Paper |
+| :--- | :---: | :--- |
+| MyVLM | 29 | [MyVLM: Personalizing VLMs for User-Specific Queries](https://arxiv.org/abs/2403.14599) (ECCV 2024) |
+| Yo'LLaVA | 40 | [Yo'LLaVA: Your Personalized Language and Vision Assistant](https://arxiv.org/abs/2406.09400) (NeurIPS 2024) |
+| PerVA | 329 | [Training-Free Personalization via Retrieval and Reasoning on Fingerprints](https://arxiv.org/abs/2503.18623) (ICCV 2025) |
 
 ## Results
 
