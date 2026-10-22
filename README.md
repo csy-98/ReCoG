@@ -8,7 +8,7 @@ Changseon Yu · Hyeokjun Kweon
 
 <img src="assets/fovlab-logo.png" alt="FoVLab" height="20" align="absmiddle"> [Foundational Vision Laboratory](https://fovlab.cau.ac.kr/home), <img src="assets/cau-logo.png" alt="Chung-Ang University" height="20" align="absmiddle"> Chung-Ang University
 
-📄 Paper (coming soon) · [🤗 Dataset](https://huggingface.co/datasets/ssun0626/FINGER) · [🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md)
+📄 Paper (coming soon) · [🤗 Dataset](https://huggingface.co/datasets/ssun0626/FINGER) · [🚀 Run](docs/running.md)
 
 <img src="assets/recog-overview.svg" alt="ReCoG overview: relation-agnostic vs. relation-aware personalization, and the Relational Concept Graph" width="100%">
 
@@ -35,25 +35,6 @@ regimes. ReCoG also achieves consistently best performance on established person
 benchmarks including captioning and VQA, confirming that relational evidence is broadly
 beneficial beyond fine-grained settings.
 
-## Method
-
-**1. Relation-aware database.** For each pair of concepts $(c_i, c_j)$, a frozen VLM is asked
-what makes $c_i$ different from $c_j$. The answer is stored as a directed edge
-
-$$e_{ij} = \mathrm{VLM}(x_i^s, x_j^s \mid P_{\text{disc}}),$$
-
-and $e_{ij} \neq e_{ji}$ in general. Both edges are obtained from a single VLM call per
-unordered pair. Each concept entry stores its CLIP embedding and its outgoing edges.
-
-**2. Discriminative retrieval via explicit comparison.** At inference, CLIP similarity prunes
-the concept set to a shortlist $\mathcal{K}$. For every pair $(u, v)$ in $\mathcal{K}$, the
-frozen VLM decides whether the query is closer to $c_u$ or $c_v$, conditioned on $e_{uv}$ and
-$e_{vu}$. Wins are aggregated round-robin, and the concept with the most wins is returned
-(ties are broken by CLIP similarity).
-
-**3. Sparse ReCoG.** Instead of all $\mathcal{O}(N^2)$ pairs, edges are built only between each
-concept and its top-$k$ CLIP neighbors, reducing database construction cost.
-
 ## Datasets
 
 ### FINGER benchmark (ours)
@@ -70,7 +51,7 @@ confusability.
 <p align="center">
   <a href="assets/finger-cub-easy-grid.png"><img src="assets/finger-cub-easy-grid.png" alt="CUB-Easy: 20 concept support images in a 5-column by 4-row grid" width="32%"></a>
   <a href="assets/finger-cub-hard-grid.png"><img src="assets/finger-cub-hard-grid.png" alt="CUB-Hard: 20 concept support images in a 5-column by 4-row grid" width="32%"></a>
-  <a href="assets/finger-clevr-grid.png"><img src="assets/finger-clevr-grid.png" alt="CLEVR V2: 20 scene support images in a 5-column by 4-row grid" width="32%"></a>
+  <a href="assets/finger-clevr-grid.png"><img src="assets/finger-clevr-grid.png" alt="CLEVR: 20 scene support images in a 5-column by 4-row grid" width="32%"></a>
 </p>
 
 Each panel shows one support image per concept (5 columns × 4 rows). Click a panel to enlarge.
@@ -158,18 +139,6 @@ Recognition and captioning on MyVLM, Yo'LLaVA, and PerVA:
 |  | RAP | 92.9 | 85.2 | 89.0 | 64.1 |
 |  | R2P | 90.2 | 92.8 | 91.8 | 72.5 |
 |  | **ReCoG** | **97.7** | **99.9** | **98.8** | **73.7** |
-
-VQA on Yo'LLaVA:
-
-| Method | Yo'LLaVA | RAP | GPT-4V+VP | LLaVA | R2P | **ReCoG** |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Accuracy | 92.9 | 93.2 | 86.6 | 89.9 | 96.5 | **97.0** |
-
-### Sparse ReCoG
-
-On CUB-Hard, Sparse ReCoG with $k=1$ already outperforms R2P while requiring only 13 VLM
-calls for graph construction. With $k=2$, it reaches **85.0%** P.Acc using only **26** VLM
-calls, close to the full ReCoG performance of **86.3%** obtained with all 190 pairwise edges.
 
 ## Getting started
 
