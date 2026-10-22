@@ -10,7 +10,7 @@ Changseon Yu · Hyeokjun Kweon
 
 📄 Paper (coming soon) · [🤗 Dataset](https://huggingface.co/datasets/ssun0626/FINGER) · [🚀 Run](docs/running.md)
 
-<img src="assets/recog-overview.svg" alt="ReCoG overview: relation-agnostic vs. relation-aware personalization, and the Relational Concept Graph" width="100%">
+<img src="assets/recog-overview.svg" alt="ReCoG overview: relation-agnostic vs. relation-aware personalization" width="100%">
 
 </div>
 
