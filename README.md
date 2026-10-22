@@ -8,7 +8,7 @@ Changseon Yu · Hyeokjun Kweon
 
 <img src="assets/fovlab-logo.png" alt="FoVLab" height="20" align="absmiddle"> [Foundational Vision Laboratory](https://fovlab.cau.ac.kr/home), <img src="assets/cau-logo.png" alt="Chung-Ang University" height="20" align="absmiddle"> Chung-Ang University
 
-📄 Paper (coming soon) · [🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md)
+📄 Paper (coming soon) · [🤗 Dataset](https://huggingface.co/datasets/ssun0626/FINGER) · [🚀 Run](docs/running.md) · [🧭 Method](docs/methodology.md)
 
 <img src="assets/recog-overview.svg" alt="ReCoG overview: relation-agnostic vs. relation-aware personalization, and the Relational Concept Graph" width="100%">
 
@@ -63,11 +63,24 @@ confusability.
 
 | Task | Source | Concepts | Images | Download |
 | :--- | :--- | :---: | :---: | :---: |
-| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) | 🤗 Coming soon |
-| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) | 🤗 Coming soon |
-| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) | 🤗 Coming soon |
+| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) | [🤗 Preview](https://huggingface.co/datasets/ssun0626/FINGER/viewer/cub_easy/train) · [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CUB_easy.zip?download=true) |
+| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) | [🤗 Preview](https://huggingface.co/datasets/ssun0626/FINGER/viewer/cub_hard/train) · [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CUB_hard.zip?download=true) |
+| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) | [🤗 Preview (V2)](https://huggingface.co/datasets/ssun0626/FINGER/viewer/clevr_v2/train) · [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CLEVR.zip?download=true) |
 
-> 🤗 FINGER will be released on Hugging Face.
+**[🤗 FINGER on Hugging Face](https://huggingface.co/datasets/ssun0626/FINGER)** provides
+image previews, Python loading, and the original dataset folders as ZIP archives.
+The available CLEVR download is explicitly versioned as `clevr_v2`; see
+[download instructions and source/version details](docs/datasets.md).
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("ssun0626/FINGER", "cub_easy", revision="v1.0.0")
+support, queries = dataset["train"], dataset["test"]
+```
+
+Use `cub_hard` or `clevr_v2` for the other subsets. `train` contains the support images;
+`test` contains the queries. Image bytes, concept IDs, and the existing splits are preserved.
 
 ### Established benchmarks
 
@@ -169,8 +182,8 @@ recog recognize --database private/database.json --query /path/to/query.jpg --me
 
 `python -m recog` also works in place of `recog`. See the [execution guide](docs/running.md)
 for manifest fields, existing R2P DB import, local checkpoints, and installation details.
-Database contents, concept inventories, support images, embeddings, and model weights are not
-distributed and stay local.
+FINGER images, concept mappings, and split files are distributed through Hugging Face.
+User-specific databases, embeddings, generated feature caches, and model weights stay local.
 
 ## Code structure
 
