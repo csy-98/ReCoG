@@ -6,7 +6,7 @@
 
 Changseon Yu · Hyeokjun Kweon
 
-<img src="assets/fovlab-logo.png" alt="FoVLab" height="20" align="absmiddle"> [Foundational Vision Laboratory](https://fovlab.cau.ac.kr/home), <img src="assets/cau-logo.png" alt="Chung-Ang University" height="20" align="absmiddle"> Chung-Ang University
+<img src="assets/fovlab-logo.png" alt="FoVLab" height="20" align="absmiddle"> [Foundational Vision Laboratory](https://fovlab.cau.ac.kr/home), <img src="assets/cau-logo.png" alt="Chung-Ang University" height="20" align="absmiddle"> [Chung-Ang University](https://meta.cau.ac.kr/)
 
 📄 Paper (coming soon) · [🤗 Dataset](https://huggingface.co/datasets/ssun0626/FINGER) · [🚀 Run](docs/running.md)
 
