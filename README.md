@@ -63,12 +63,20 @@ confusability.
 
 | Task | Source | Concepts | Images | Download |
 | :--- | :--- | :---: | :---: | :---: |
-| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) | [🤗 Preview](https://huggingface.co/datasets/ssun0626/FINGER/viewer/cub_easy/train) · [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CUB_easy.zip?download=true) |
-| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) | [🤗 Preview](https://huggingface.co/datasets/ssun0626/FINGER/viewer/cub_hard/train) · [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CUB_hard.zip?download=true) |
-| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) | [🤗 Preview (V2)](https://huggingface.co/datasets/ssun0626/FINGER/viewer/clevr_v2/train) · [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CLEVR.zip?download=true) |
+| CUB-Easy | 20 species sampled at random from CUB-200-2011 | 20 | 1 support + 19 queries per concept (400) | [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CUB_easy.zip?download=true) |
+| CUB-Hard | 20 visually similar species selected with CUB attributes (predominantly black birds) | 20 | 1 support + 19 queries per concept (400) | [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CUB_hard.zip?download=true) |
+| CLEVR | Each concept is a scene configuration; queries are rendered from different viewpoints | 20 | 1 support + 9 queries per concept (200) | [ZIP](https://huggingface.co/datasets/ssun0626/FINGER/resolve/v1.0.0/downloads/CLEVR.zip?download=true) |
+
+<p align="center">
+  <a href="assets/finger-cub-easy-grid.png"><img src="assets/finger-cub-easy-grid.png" alt="CUB-Easy: 20 concept support images in a 5-column by 4-row grid" width="32%"></a>
+  <a href="assets/finger-cub-hard-grid.png"><img src="assets/finger-cub-hard-grid.png" alt="CUB-Hard: 20 concept support images in a 5-column by 4-row grid" width="32%"></a>
+  <a href="assets/finger-clevr-grid.png"><img src="assets/finger-clevr-grid.png" alt="CLEVR V2: 20 scene support images in a 5-column by 4-row grid" width="32%"></a>
+</p>
+
+Each panel shows one support image per concept (5 columns × 4 rows). Click a panel to enlarge.
 
 **[🤗 FINGER on Hugging Face](https://huggingface.co/datasets/ssun0626/FINGER)** provides
-image previews, Python loading, and the original dataset folders as ZIP archives.
+Python loading and the original dataset folders as ZIP archives.
 The available CLEVR download is explicitly versioned as `clevr_v2`; see
 [download instructions and source/version details](docs/datasets.md).
 
