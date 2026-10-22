@@ -84,12 +84,14 @@ Use `cub_hard` or `clevr_v2` for the other subsets. `train` contains the support
 **Setup.** CLIP ViT-L for the database, MiniCPM-o-2.6 as the VLM, and a single reference image
 per concept. P.Acc / N.Acc are accuracies on positive / negative queries, Wtd. is their average,
 and Recall is the hard recall for captioning.
+Negative queries are images from all other concepts. Following the paper, Baseline and ReCoG
+compute N.Acc from their top-1 retrieval outputs.
 
 ### FINGER benchmark
 
 | Dataset | Method | P.Acc | N.Acc | Wtd. | Recall |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **CUB-Easy** | R2P | 87.9 | 88.9 | 88.4 | 76.1 |
+| **CUB-Easy** | R2P | 87.9 | 99.4 | 93.6 | 76.1 |
 |  | Baseline | 50.0 | 97.3 | 73.7 | 65.0 |
 |  | **ReCoG** | **96.3** | **99.8** | **98.1** | **80.8** |
 | **CUB-Hard** | R2P | 63.8 | 98.1 | 81.0 | 55.0 |
@@ -100,7 +102,8 @@ and Recall is the hard recall for captioning.
 |  | **ReCoG** | **87.2** | **99.3** | **93.3** | **41.7** |
 
 Baseline uses R2P's relation-agnostic descriptions with pairwise retrieval. On Wtd., ReCoG
-outperforms R2P by **+9.7**, **+11.8**, and **+13.7** points on CUB-Easy, CUB-Hard, and CLEVR.
+outperforms R2P by **+4.5**, **+11.8**, and **+13.7** percentage points on CUB-Easy, CUB-Hard,
+and CLEVR, respectively, using the displayed table values.
 
 ### CLEVR difficulty (P.Acc / N.Acc)
 
@@ -108,15 +111,15 @@ $K$ is scene complexity; 1-hop concepts differ by a smaller change than 2-hop co
 
 | $K$ | Method | 1-hop | 2-hop |
 | :---: | :--- | :---: | :---: |
-| 4 | R2P | 61.7 / 63.8 | 75.0 / 83.2 |
-|   | Baseline | 52.8 / 98.0 | 68.3 / 98.8 |
-|   | **ReCoG** | **91.4 / 99.7** | **91.7 / 99.6** |
-| 5 | R2P | 53.8 / 60.5 | 72.2 / 80.9 |
+| 4 | R2P | 61.7 / 98.0 | 75.0 / 98.7 |
+|   | Baseline | 52.8 / 97.5 | 68.3 / 98.3 |
+|   | **ReCoG** | **91.4 / 99.5** | **91.7 / 99.6** |
+| 5 | R2P | 53.8 / 97.6 | 72.2 / 98.5 |
 |   | Baseline | 36.1 / 96.6 | 50.5 / 97.4 |
-|   | **ReCoG** | **76.6 / 98.7** | **82.2 / 99.1** |
-| 6 | R2P | 46.6 / 53.4 | 68.4 / 70.9 |
+|   | **ReCoG** | **76.6 / 98.8** | **82.2 / 99.1** |
+| 6 | R2P | 46.6 / 97.2 | 68.4 / 98.3 |
 |   | Baseline | 30.0 / 96.3 | 40.0 / 96.8 |
-|   | **ReCoG** | **74.4 / 98.6** | **81.4 / 98.4** |
+|   | **ReCoG** | **74.4 / 98.7** | **81.4 / 99.0** |
 
 ### Established benchmarks
 
