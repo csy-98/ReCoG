@@ -105,22 +105,6 @@ Baseline uses R2P's relation-agnostic descriptions with pairwise retrieval. On W
 outperforms R2P by **+4.5**, **+11.8**, and **+13.7** percentage points on CUB-Easy, CUB-Hard,
 and CLEVR, respectively, using the displayed table values.
 
-### CLEVR difficulty (P.Acc / N.Acc)
-
-$K$ is scene complexity; 1-hop concepts differ by a smaller change than 2-hop concepts.
-
-| $K$ | Method | 1-hop | 2-hop |
-| :---: | :--- | :---: | :---: |
-| 4 | R2P | 61.7 / 98.0 | 75.0 / 98.7 |
-|   | Baseline | 52.8 / 97.5 | 68.3 / 98.3 |
-|   | **ReCoG** | **91.4 / 99.5** | **91.7 / 99.6** |
-| 5 | R2P | 53.8 / 97.6 | 72.2 / 98.5 |
-|   | Baseline | 36.1 / 96.6 | 50.5 / 97.4 |
-|   | **ReCoG** | **76.6 / 98.8** | **82.2 / 99.1** |
-| 6 | R2P | 46.6 / 97.2 | 68.4 / 98.3 |
-|   | Baseline | 30.0 / 96.3 | 40.0 / 96.8 |
-|   | **ReCoG** | **74.4 / 98.7** | **81.4 / 99.0** |
-
 ### Established benchmarks
 
 Recognition and captioning on MyVLM, Yo'LLaVA, and PerVA:
